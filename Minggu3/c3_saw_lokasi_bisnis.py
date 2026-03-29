@@ -34,7 +34,7 @@ lokasi    = ["Lokasi A (Pusat Kota)", "Lokasi B (Mall)", "Lokasi C (Pinggiran)"]
 kriteria  = ["Biaya Sewa", "Akses Pelanggan", "Tingkat Persaingan"]
 
 # Kolom: [Biaya sewa (juta/bln), Akses pelanggan (1-10), Persaingan (1-10)]
-# Persaingan rendah = lebih baik → cost
+# Persaingan rendah = lebih baik 
 matrix = np.array([
     [15.0, 9, 8],   # Lokasi A: mahal, ramai, persaingan tinggi
     [12.0, 8, 7],   # Lokasi B: menengah, cukup ramai
