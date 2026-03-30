@@ -17,17 +17,38 @@ def saw(matrix, weights, benefit_criteria):
     2. Kalikan dengan bobot
     3. Jumlahkan → skor preferensi
     """
+    matrix = np.asarray(matrix, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    benefit_criteria = np.asarray(benefit_criteria, dtype=bool)
+
+    if matrix.ndim != 2:
+        raise ValueError("matrix harus 2 dimensi (baris alternatif x kolom kriteria)")
+
     m, n = matrix.shape
+    if weights.shape[0] != n:
+        raise ValueError("Jumlah bobot harus sama dengan jumlah kriteria")
+    if benefit_criteria.shape[0] != n:
+        raise ValueError("benefit_criteria harus berisi flag untuk setiap kriteria")
+
+    weight_sum = weights.sum()
+    if weight_sum <= 0:
+        raise ValueError("Total bobot harus lebih besar dari 0")
+
+    # Menjaga konsistensi skor walau bobot belum dinormalisasi.
+    norm_weights = weights / weight_sum
     norm_matrix = np.zeros((m, n))
 
     for j in range(n):
         col = matrix[:, j]
         if benefit_criteria[j]:
-            norm_matrix[:, j] = col / col.max()   # Benefit
+            max_val = col.max()
+            norm_matrix[:, j] = 0 if max_val == 0 else col / max_val   # Benefit
         else:
+            if np.any(col == 0):
+                raise ValueError(f"Kriteria cost pada kolom {j} memiliki nilai 0, tidak bisa dibagi")
             norm_matrix[:, j] = col.min() / col   # Cost
 
-    weighted_scores = norm_matrix * weights
+    weighted_scores = norm_matrix * norm_weights
     return weighted_scores.sum(axis=1), norm_matrix
 
 lokasi    = ["Lokasi A (Pusat Kota)", "Lokasi B (Mall)", "Lokasi C (Pinggiran)"]
